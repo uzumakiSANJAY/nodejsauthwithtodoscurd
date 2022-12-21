@@ -24,7 +24,7 @@ async function register (request, reply) {
             if(error){
                 //Check first for existing data.
                 if(error.code === 'ER_DUP_ENTRY'){
-                    return response.badRequest('', `E-mail ${email} telah digunakan!`, reply)
+                    return response.badRequest('', `E-mail ${email} was used!`, reply)
                 }
 
                 // If not a duplicate entry then print the error that occurred.
@@ -36,7 +36,7 @@ async function register (request, reply) {
         })
     );
 
-    return response.ok(data, `Berhasil registrasi pengguna baru - ${email}`, reply);
+    return response.ok(data, `Successful new user registration - ${email}`, reply);
 }
 
 async function login(request, reply) {
@@ -70,10 +70,10 @@ async function login(request, reply) {
     );
 
     if(!data){
-        return response.badRequest('','Email atau password yang anda masukkan salah!', reply)
+        return response.badRequest('','The email or password you entered is incorrect!', reply)
     }
 
-    return response.ok(data, `Berhasil login!`, reply);
+    return response.ok(data, `Login successfully!`, reply);
 }
 
 module.exports = {
