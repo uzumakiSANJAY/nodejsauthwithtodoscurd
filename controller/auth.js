@@ -2,7 +2,7 @@ let response = require('../response');
 let connection = require ('../connection');
 let moment = require ('moment');
 let crypto = require ('crypto');
-const { resolve } = require('path');
+
 
 async function createToken(request , reply) {
   let now = moment().format("YYYY-MM-DD HH:mm:ss").toString();
@@ -96,7 +96,7 @@ async function checkToken (request, reply) {
 
     let array = { expires_at: data};
     let message = moment(data).format('YYYY-MM-DD HH:mm:ss').toString() > now ?
-        'Token ini milikmu dan masih aktif hingga saat ini!' : "Token kamu sudah tidak aktif!";
+        'This token is yours and is still active today!' : "Your token is no longer active!";
 
     return array ? response.ok(array, message, reply) : response.badRequest({}, message, reply);
 }
