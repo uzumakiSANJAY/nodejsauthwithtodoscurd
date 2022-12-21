@@ -1,65 +1,77 @@
-let users = require('./controller/users');
-let auth = require('./controller/auth');
-let todo = require('./controller/todo');
-let middleware =  require('./middleware/middleware-token.js');
+let users = require("./controller/users");
+let auth = require("./controller/auth");
+let todo = require("./controller/todo");
+let middleware = require("./middleware/middleware-token.js");
+const fp = require("fastify-plugin");
 
-async function  routes (fastify , options){
+
+module.exports = fp(async function (fastify, opts, done) {
+  try {
     //Route
-    fastify.get('/', function(request , reply){
-        reply.send({message : 'Hello World', code : 200});
-    });
-    fastify.post('/api/usres/login',users.login);
-    fastify.post('/api/users/register',users.register);
-    fastify.post('api/token', auth.createToken);
-    fastify.post('/api/token/check',auth.checkToken);
-
-    fastify.route({
-        method : 'GET',
-        url : '/api/todo',
-        preHandler : async function (request , reply , done){
-            await middleware.check(request , reply);
-            done()
-        },
-        handler : todo.get
+    fastify.get("/", function (request, reply) {
+      reply.send({ message: "Hello World", code: 200 });
     });
 
+    fastify.post("/api/usres/login", users.login);
+
+    fastify.post("/api/users/register", users.register);
+
+    fastify.post("/api/token", auth.createToken);
+
+    fastify.post("/api/token/check", auth.checkToken);
+
     fastify.route({
-        method : 'GET',
-        url : '/api/todo/:id',
-        preHandler : async function (request , reply , done){
-            await middleware.check(request , reply);
-            done()
-        }
+      method: "GET",
+      url: "/api/todo",
+      preHandler: async function (request, reply, done) {
+        await middleware.check(request, reply);
+        done();
+      },
+      handler: todo.get,
     });
 
     fastify.route({
-        method : 'POST',
-        url : '/api/todo',
-        preHandler: async function (request , reply , done){
-            await middleware.check(request , reply);
-            done()
-        },
-        handler : todo.store 
+      method: "GET",
+      url: "/api/todo/:id",
+      preHandler: async function (request, reply, done) {
+        await middleware.check(request, reply);
+        done();
+      },
+      handler: todo.show,
     });
 
     fastify.route({
-        method : 'PUT',
-        url : '/api/todo',
-        preHandler : async function(request , reply , done){
-            await middleware.check(request , reply);
-            done()
-        },
-        handler : todo.update
+      method: "POST",
+      url: "/api/todo",
+      preHandler: async function (request, reply, done) {
+        await middleware.check(request, reply);
+        done();
+      },
+      handler: todo.store,
     });
+    
     fastify.route({
-        method : 'DELETE',
-        url : '/api/todo',
-        preHandler : async function(request , reply , done){
-            await middleware.check(request, reply);
-            done()
-        },
-        handler : todo.destroy
+      method: "PUT",
+      url: "/api/todo",
+      preHandler: async function (request, reply, done) {
+        await middleware.check(request, reply);
+        done();
+      },
+      handler: todo.update,
     });
-}
 
-module.exports = routes
+    fastify.route({
+      method: "DELETE",
+      url: "/api/todo",
+      preHandler: async function (request, reply, done) {
+        await middleware.check(request, reply);
+        done();
+      },
+      handler: todo.destroy,
+    });
+    
+  } catch (err) {
+    console.log(err);
+  }
+  done();
+});
